@@ -15,6 +15,7 @@ class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs
     private var mBrushSize : Float = 0.toFloat()
     private var color = Color.BLACK
     private var canvas : Canvas? = null
+    private var mPaths = ArrayList<CustomPath>()    // tu zapisujemy to co namalowaliśmy
 
     init{
         setUpDrawing()
@@ -40,6 +41,13 @@ class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs
     override fun onDraw(canvas: Canvas) { //draw on canvas
         super.onDraw(canvas)
         canvas.drawBitmap(mCanvasBitmap!!, 0f,0f, mCanvasPaint) // left, top -> pozycja w ktorej zaczynamy
+
+        for(path in mPaths){    //zapamiętuje wsyztskie namalwoena linie
+            mDrawPaint!!.strokeWidth = path.brushThickens
+            mDrawPaint!!.color = path.color
+            canvas.drawPath(path, mDrawPaint!!)
+        }
+
         if(!mDrawPath!!.isEmpty) {
             mDrawPaint!!.strokeWidth = mDrawPath!!.brushThickens
             mDrawPaint!!.color = mDrawPath!!.color
@@ -54,7 +62,7 @@ class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs
         when(event?.action){                //jak dzieją się jakieś akcje związane z ruchem na ekranie
             MotionEvent.ACTION_DOWN -> {    // jak dotkniemy
                 mDrawPath!!.color = color
-                mDrawPath!!.brushThickens = mBrushSizegit
+                mDrawPath!!.brushThickens = mBrushSize
 
                 mDrawPath!!.reset() // clear all the paths
                 if (touchX != null) {
@@ -71,6 +79,7 @@ class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs
                 }
             }
             MotionEvent.ACTION_UP ->{
+                mPaths.add(mDrawPath!!)
                 mDrawPath = CustomPath(color, mBrushSize)
             }
             else -> return false
