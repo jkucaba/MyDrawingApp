@@ -3,6 +3,7 @@ package com.example.mydrawingapp
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 
 class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs){
@@ -29,6 +30,55 @@ class DrawingView(context : Context, attrs : AttributeSet) : View(context, attrs
         mBrushSize = 20.toFloat()
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {//jak się zmieni rozmiar
+        super.onSizeChanged(w, h, oldw, oldh)
+        mCanvasBitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888) //265 wartośći dla każdego koloru
+        canvas = Canvas(mCanvasBitmap!!)
+
+    }
+    // Change Canvas to Canvas? if fails
+    override fun onDraw(canvas: Canvas) { //draw on canvas
+        super.onDraw(canvas)
+        canvas.drawBitmap(mCanvasBitmap!!, 0f,0f, mCanvasPaint) // left, top -> pozycja w ktorej zaczynamy
+        if(!mDrawPath!!.isEmpty) {
+            mDrawPaint!!.strokeWidth = mDrawPath!!.brushThickens
+            mDrawPaint!!.color = mDrawPath!!.color
+            canvas.drawPath(mDrawPath!!, mDrawPaint!!)
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean { //jak się dotknie
+        val touchX = event?.x
+        val touchY = event?.y
+
+        when(event?.action){                //jak dzieją się jakieś akcje związane z ruchem na ekranie
+            MotionEvent.ACTION_DOWN -> {    // jak dotkniemy
+                mDrawPath!!.color = color
+                mDrawPath!!.brushThickens = mBrushSizegit
+
+                mDrawPath!!.reset() // clear all the paths
+                if (touchX != null) {
+                    if (touchY != null) {
+                        mDrawPath!!.moveTo(touchX,touchY)
+                    }
+                }
+            }
+            MotionEvent.ACTION_MOVE ->{     //jak przesuwamy
+                if (touchX != null) {
+                    if (touchY != null) {
+                        mDrawPath!!.lineTo(touchX,touchY)
+                    }
+                }
+            }
+            MotionEvent.ACTION_UP ->{
+                mDrawPath = CustomPath(color, mBrushSize)
+            }
+            else -> return false
+        }
+        invalidate()        //unieważnia widok
+
+        return true
+    }
     internal inner class CustomPath(var color: Int,
                                     var brushThickens: Float) : Path(){//dostęp tylko tutaj
 
