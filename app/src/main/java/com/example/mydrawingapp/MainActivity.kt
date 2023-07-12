@@ -25,11 +25,8 @@ class MainActivity : AppCompatActivity() {
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             result ->
-<<<<<<< HEAD
             if(result.resultCode == RESULT_OK && result.data!=null){
-=======
             if(result.resultCode == RESULT_OK && result.data != null){
->>>>>>> branch1
                 val imageBackGround:ImageView = findViewById(R.id.iv_background)
 
                 imageBackGround.setImageURI(result.data?.data)
@@ -44,7 +41,6 @@ class MainActivity : AppCompatActivity() {
                 val isGranted = it.value
 
                 if(isGranted){
-<<<<<<< HEAD
                     Toast.makeText(
                         this@MainActivity, "Permission granted now you can read the storage files",
                         Toast.LENGTH_LONG).show()
@@ -53,7 +49,6 @@ class MainActivity : AppCompatActivity() {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                     openGalleryLauncher.launch(pickIntent)
 
-=======
                     Toast.makeText(this@MainActivity,
                         "Permission granted now you can read the storage files",
                         Toast.LENGTH_LONG).show()
@@ -62,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
                     openGalleryLauncher.launch(pickIntent)
->>>>>>> branch1
                 }else {
                     if (permissionName == android.Manifest.permission.READ_EXTERNAL_STORAGE) {
                         Toast.makeText(
