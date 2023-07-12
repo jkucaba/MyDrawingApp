@@ -24,8 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-            if(result.resultCode == RESULT_OK && result.data!=null){
+                result ->
             if(result.resultCode == RESULT_OK && result.data != null){
                 val imageBackGround:ImageView = findViewById(R.id.iv_background)
 
@@ -35,26 +34,18 @@ class MainActivity : AppCompatActivity() {
 
     val requestPermission: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-            permissions ->
+                permissions ->
             permissions.entries.forEach{
                 val permissionName = it.key
                 val isGranted = it.value
 
                 if(isGranted){
-                    Toast.makeText(
-                        this@MainActivity, "Permission granted now you can read the storage files",
-                        Toast.LENGTH_LONG).show()
-
-                    val pickIntent = Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                    openGalleryLauncher.launch(pickIntent)
-
                     Toast.makeText(this@MainActivity,
                         "Permission granted now you can read the storage files",
                         Toast.LENGTH_LONG).show()
 
                     val pickIntent = Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
                     openGalleryLauncher.launch(pickIntent)
                 }else {
@@ -66,8 +57,8 @@ class MainActivity : AppCompatActivity() {
                         ).show()
                     }
                 }
-                }
             }
+        }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
